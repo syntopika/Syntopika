@@ -23,7 +23,7 @@
 (defn statementSTRING "Convert an rdf-statement to n-triples (period terminated) string" [s] 
     (str (s :subject) " " (s :predicate) " " (s :object) " ."))
 ;
-; 1 - create-statement (maps formData to rdf-statement, includes formatting).
+; 1 - create-statement (maps formData to a sequence rdf-statement, includes formatting).
 ;     formData is:
 ;                 customerEMAIL
 ;                 customerNAME
@@ -39,6 +39,10 @@
 ;                 ; service Predicate/providedBy + barber
 ;                 ; barber Predicate#name + barberNAME
 ;
+(defn create-statement "maps formData to a sequence rdf-statement, includes formatting"
+    [formData] 
+    ; throw an exception if missing any key
+)  
 
 ;
 ; 2 - nt-rdf-writer: takes all of the rdf statements and appends N-triples to file.

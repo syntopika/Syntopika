@@ -18,6 +18,9 @@
     (is (. "A B C ." equals (statementSTRING (rdf-statement "A" "B" "C"))))))
 
 ; 2 RDF-Encoding
-
+(deftest Create-Statement
+    (testing "Constructing the barbershop triplestore in memory, from a map."
+    ; Result should contain every sentance 
+))
 ; 3 RDF-Output
 
