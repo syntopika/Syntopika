@@ -1,15 +1,15 @@
 ;;; rdf_nt.rdf_write_server.clj -- example of writing RDF to file
-(ns ^{:author "Bob Savage" :version "v0.0"
-;       :doc (str
-;" rdf-write-server: Essential Points" "\n"
-;"  0 - rdf-statement" "\n" 
-;"  1 - create-statement (maps formData to rdf-statement," "\n"
-;"      includes formatting as well as business rules)." "\n"
-;"  2 - nt-rdf-writer takes all of the variables and appends N-triples to file." "\n"
-;"  3 - port-listener (facilitates input, creates sequence of rdf-statements," "\n"
-;"      wraps function in 1, and HTTP response doc.)" "\n" )
 ;
-}
+; rdf-write-server: Essential Points
+;  0 - rdf-statement
+;  1 - create-statement (maps formData to rdf-statement,
+;      includes formatting as well as business rules).
+;  2 - nt-rdf-writer takes all of the variables and appends N-triples to file.
+;  3 - port-listener (facilitates input, creates sequence of rdf-statements,
+;      wraps function in 1, and HTTP response doc.)" "\n" )
+;
+
+(ns ^{:author "Bob Savage" :version "v0.0"}
    rdf-nt.rdf-write-server
    ; imports & dependencies
 )
@@ -25,23 +25,32 @@
 ;
 ; 1 - create-statement (maps formData to a sequence rdf-statement, includes formatting).
 ;     formData is:
-;                 customerEMAIL
-;                 customerNAME
-;                 serviceCOST
-;                 serviceDATE
-;                 barberNAME
+;         customerEMAIL
+;         customerNAME
+;         serviceCOST
+;         serviceDATE
+;         barberID
 ;
 ;    statements to create:
-;                 "<mailto://" + customerEMAIL + ">" Predicate#name + customerNAME
-;                 "<mailto://" + customerEMAIL + ">" Predicate#received + "_:" + service
-;                 ; service p + serviceCOST
-;                 ; service p + serviceDATE
-;                 ; service Predicate/providedBy + barber
-;                 ; barber Predicate#name + barberNAME
+;         "<mailto://" + customerEMAIL + ">" Predicate#name + customerNAME
+;         "<mailto://" + customerEMAIL + ">" Predicate#received + "_:" + service
+;         ; service p + serviceCOST
+;         ; service p + serviceDATE
+;         ; service Predicate/providedBy + barberID
+;           (assume we already have all barber names)
 ;
 (defn create-statement "maps formData to a sequence rdf-statement, includes formatting"
     [formData] 
     ; throw an exception if missing any key
+    (if-not (every? (fn [x] (contains? formData x))
+                                     [:customerEMAIL
+                                      :customerNAME
+                                      :serviceCOST
+                                      :serviceDATE
+                                      :barberID])
+        (throw (new java.lang.Exception "Missing expected keys")))
+    ; construct statements
+    (nil)
 )  
 
 ;
