@@ -32,12 +32,12 @@
 ;         barberID
 ;
 ;    statements to create:
-;         "<mailto://" + customerEMAIL + ">" Predicate#name + customerNAME
-;         "<mailto://" + customerEMAIL + ">" Predicate#received + "_:" + service
-;         ; service p + serviceCOST
-;         ; service p + serviceDATE
-;         ; service Predicate/providedBy + barberID
-;           (assume we already have all barber names)
+;         customerEMAIL + Predicate#name + customerNAME
+;         customerEMAIL + Predicate#received + _:service
+;         _:service + Predicate#cost + serviceCOST
+;         _:service + Predicate#date + serviceDATE
+;         _:service Predicate#providedBy + barberID
+;           (assume we already have all barber names, and can look up from barberID)
 ;
 (defn create-statement "maps formData to a sequence rdf-statement, includes formatting"
     [formData] 
@@ -50,6 +50,12 @@
                                       :barberID])
         (throw (new java.lang.Exception "Missing expected keys")))
     ; construct statements
+    [(rdf-statement (str  "<mailto://" (:customerEMAIL formData) ">")
+                    (str "<http://www.example.com/barbershop/Predicate#Name>")
+                    (:customerNAME formData))
+     (rdf-statement (str "<mailto://" (:customerEMAIL formData) ">")
+                    (str "<http://www.example.com/barbershop/Predicate#received>")
+                    "_:service")]
 )  
 
 ;
