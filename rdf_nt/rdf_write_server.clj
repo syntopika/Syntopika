@@ -50,7 +50,6 @@
                                       :barberID])
         (throw (new java.lang.Exception "Missing expected keys")))
     ; construct statements
-    (nil)
 )  
 
 ;
