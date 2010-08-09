@@ -48,7 +48,7 @@
                                       :serviceCOST
                                       :serviceDATE
                                       :barberID])
-        (throw (new java.lang.Exception "Missing expected keys")))
+        (throw (new java.lang.RuntimeException "Missing expected keys")))
     ; construct statements
     [(rdf-statement (str  "<mailto://" (:customerEMAIL formData) ">")
                     (str "<http://www.example.com/barbershop/Predicate#Name>")

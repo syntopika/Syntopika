@@ -23,7 +23,7 @@
 ;; 2 RDF-Encoding
 (deftest Create-Statements
     (testing "Constructing the barbershop triplestore in memory, from a map."
-    (is (thrown? Exception 
+    (is (thrown? RuntimeException 
         (create-statements {:useless "useless key data"}))
         "Bad formDATA (missing keys) should throw Exception.")
     ; Result should contain every sentence 
