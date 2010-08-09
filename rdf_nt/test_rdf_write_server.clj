@@ -12,7 +12,7 @@
   (:use [rdf-nt.rdf-write-server :only
                                  (rdf-statement
                                   statementSTRING
-                                  create-statement)]))
+                                  create-statements)]))
 ;; 
 ;; 1 RDF-Statement
 (deftest RDF-Statement-ADT
@@ -21,10 +21,10 @@
     (is (. "A B C ." equals (statementSTRING (rdf-statement "A" "B" "C"))))))
 ;;
 ;; 2 RDF-Encoding
-(deftest Create-Statement
+(deftest Create-Statements
     (testing "Constructing the barbershop triplestore in memory, from a map."
     (is (thrown? Exception 
-        (create-statement {:useless "useless key data"}))
+        (create-statements {:useless "useless key data"}))
         "Bad formDATA (missing keys) should throw Exception.")
     ; Result should contain every sentence 
 ))

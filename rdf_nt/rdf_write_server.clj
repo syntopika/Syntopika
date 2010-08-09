@@ -2,7 +2,7 @@
 ;
 ; rdf-write-server: Essential Points
 ;  0 - rdf-statement
-;  1 - create-statement (maps formData to rdf-statement,
+;  1 - create-statements (maps formData to rdf-statements,
 ;      includes formatting as well as business rules).
 ;  2 - nt-rdf-writer takes all of the variables and appends N-triples to file.
 ;  3 - port-listener (facilitates input, creates sequence of rdf-statements,
@@ -23,7 +23,7 @@
 (defn statementSTRING "Convert an rdf-statement to n-triples (period terminated) string" [s] 
     (str (s :subject) " " (s :predicate) " " (s :object) " ."))
 ;
-; 1 - create-statement (maps formData to a sequence rdf-statement, includes formatting).
+; 1 - create-statements (maps formData to a sequence rdf-statement, includes formatting).
 ;     formData is:
 ;         customerEMAIL
 ;         customerNAME
@@ -39,7 +39,7 @@
 ;         _:service Predicate#providedBy + barberID
 ;           (assume we already have all barber names, and can look up from barberID)
 ;
-(defn create-statement "maps formData to a sequence rdf-statement, includes formatting"
+(defn create-statements "maps formData to a sequence rdf-statement, includes formatting"
     [formData] 
     ; throw an exception if missing any key
     (if-not (every? (fn [x] (contains? formData x))
