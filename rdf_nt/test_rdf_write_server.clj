@@ -12,6 +12,7 @@
   (:use [rdf-nt.rdf-write-server :only
                                  (rdf-statement
                                   statementSTRING
+                                  initialize-statement-creator
                                   create-statements)]))
 ;; 
 ;; 1 RDF-Statement
@@ -23,11 +24,30 @@
 ;; 2 RDF-Encoding
 (deftest Create-Statements
     (testing "Constructing the barbershop triplestore in memory, from a map."
+
+    (testing "Initialization"
+    (is (thrown? Exception
+        (create-statements {:customerEMAIL "customerEMAIL"
+                            :customerNAME "customerNAME"
+                            :serviceCOST "serviceCOST"
+                            :serviceDATE "serviceDATE"
+                            :barberID "barberID"})
+        ) "called without statement-creator")
+
+    (is (= 0 @(initialize-statement-creator)) "initialization returns brand new statement-creator"))
+    
+    (testing "Statement Creation"
     (is (thrown? RuntimeException 
         (create-statements {:useless "useless key data"}))
         "Bad formDATA (missing keys) should throw Exception.")
-    ; Result should contain every sentence 
-))
+
+    (is (== 5 (count (create-statements  (initialize-statement-creator)
+                     {:customerEMAIL "customerEMAIL"
+                      :customerNAME "customerNAME"
+                      :serviceCOST "serviceCOST"
+                      :serviceDATE "serviceDATE"
+                      :barberID "barberID"})) "there should be 5 statements")))))
+
 ;;
 ;; 3 RDF-Output
 

@@ -9,7 +9,7 @@
 ;      wraps function in 1, and HTTP response doc.)" "\n" )
 ;
 
-(ns ^{:author "Bob Savage" :version "v0.0"}
+(ns ^{:author "Bob Savage" :version "v0.1"}
    rdf-nt.rdf-write-server
    ; imports & dependencies
 )
@@ -24,6 +24,16 @@
     (str (s :subject) " " (s :predicate) " " (s :object) " ."))
 ;
 ; 1 - create-statements (maps formData to a sequence rdf-statement, includes formatting).
+;
+(defn initialize-statement-creator
+      "Pre-dondition: The calling context must have ensured that we have a fresh file at (re)start, else file corruption can occur. The serviceID used in naming the blank nodes that represent the service event is only guaranteed to be unique within this file. Using a file from a previous run can thus include duplicate serviceIDs for different service events."
+      []
+      (atom 0))
+;;
+;;  create-statements
+;;
+;     The statement creator must be initialized before calling create-statements!
+;     
 ;     formData is:
 ;         customerEMAIL
 ;         customerNAME
@@ -31,16 +41,16 @@
 ;         serviceDATE
 ;         barberID
 ;
-;    statements to create:
-;         customerEMAIL + Predicate#name + customerNAME
-;         customerEMAIL + Predicate#received + _:service
-;         _:service + Predicate#cost + serviceCOST
-;         _:service + Predicate#date + serviceDATE
-;         _:service Predicate#providedBy + barberID
-;           (assume we already have all barber names, and can look up from barberID)
+;    5 statements to create:
+;        1 customerEMAIL + Predicate#name + customerNAME
+;        2 customerEMAIL + Predicate#received + _:service
+;        3 _:service + Predicate#cost + serviceCOST
+;        4 _:service + Predicate#date + serviceDATE
+;        5 _:service Predicate#providedBy + barberID
+;       (6) (assume we already have all barber names, and can look up from barberID)
 ;
-(defn create-statements "maps formData to a sequence rdf-statement, includes formatting"
-    [formData] 
+(defn create-statements "Maps formData to a sequence rdf-statement, includes formatting. Initialize before first use!"
+    [statement-creator, formData] 
     ; throw an exception if missing any key
     (if-not (every? (fn [x] (contains? formData x))
                                      [:customerEMAIL
@@ -49,14 +59,37 @@
                                       :serviceDATE
                                       :barberID])
         (throw (new java.lang.RuntimeException "Missing expected keys")))
+
+    ; confirm valid statement creator
+    (if-not (number? @statement-creator)
+        (throw (new java.lang.Exception "Invalid Statement Creator")))
+    ;
+    (def id-num (deref statement-creator))
+    ; increment statemets-created
+    (swap! statement-creator + 1)
+
     ; construct statements
+    ; statement 1
     [(rdf-statement (str  "<mailto://" (:customerEMAIL formData) ">")
-                    (str "<http://www.example.com/barbershop/Predicate#Name>")
+                    (str "<http://www.example.com/barbershop/Predicate#name>")
                     (:customerNAME formData))
+    ; statement 2
      (rdf-statement (str "<mailto://" (:customerEMAIL formData) ">")
                     (str "<http://www.example.com/barbershop/Predicate#received>")
-                    "_:service")]
-)  
+                    (str "_:service" id-num))
+    ; statement 3
+     (rdf-statement (str "_:service" id-num )
+                    (str "<http://www.example.com/barbershop/Predicate#cost>")
+                    (:serviceCOST formData))
+    ; statement 4
+     (rdf-statement (str "_:service" id-num )
+                    (str "<http://www.example.com/barbershop/Predicate#date>")
+                    (:serviceDATE formData))
+    ; statement 5
+     (rdf-statement (str "_:service" id-num )
+                    (str "<http://www.example.com/barbershop/Predicate#providedBy>")
+                    (:barberID formData))]
+)
 
 ;
 ; 2 - nt-rdf-writer: takes all of the rdf statements and appends N-triples to file.
