@@ -1,3 +1,7 @@
 Syntopika Repository
 
-1. rdf_nt = projects restricted to N-triples.
+1. README = this document.
+2. /rdf_nt = projects restricted to N-triples.
+   1. rdf_write_server.clj = Arch. A example code
+   2. test_rdf_write_server.clj = Arch. A unit tests
+
