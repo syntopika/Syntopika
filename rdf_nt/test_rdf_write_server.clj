@@ -41,12 +41,17 @@
         (create-statements {:useless "useless key data"}))
         "Bad formDATA (missing keys) should throw Exception.")
 
-    (is (== 5 (count (create-statements  (initialize-statement-creator)
-                     {:customerEMAIL "customerEMAIL"
-                      :customerNAME "customerNAME"
-                      :serviceCOST "serviceCOST"
-                      :serviceDATE "serviceDATE"
-                      :barberID "barberID"})) "there should be 5 statements")))))
+    (testing "state update sanity"
+        (let [sc (initialize-statement-creator)] 
+          (is (= 0 @sc) "brand new")
+          (create-statements sc
+                           {:customerEMAIL "customerEMAIL"
+                            :customerNAME "customerNAME"
+                            :serviceCOST "serviceCOST"
+                            :serviceDATE "serviceDATE"
+                            :barberID "barberID"}) 
+          (is  (= 1 @sc) "statements created was incremented"))))
+    ))
 
 ;;
 ;; 3 RDF-Output

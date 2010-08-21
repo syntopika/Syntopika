@@ -1,4 +1,5 @@
-;;; rdf_nt.rdf_write_server.clj -- example of writing RDF to file
+;;; rdf_nt.rdf_write_server.clj 
+;;; -- example of abstract architectural style A: writing RDF to file (using N-triples)
 ;
 ; rdf-write-server: Essential Points
 ;  0 - rdf-statement
