@@ -13,7 +13,8 @@
 (ns ^{:author "Bob Savage" :version "v0.2"}
    rdf-nt.rdf-write-server
    ; imports & dependencies
-   ;; not needed (:use [clojure.java.io :only (reader writer)])
+   ;; not needed (:use [clojure.java.io :only (reader writer)]) ; using slurp and spit instead
+   (:import (java.io.FileNotFoundException))
 )
 ;
 ; 0.1 - rdf-statement creates [:subject :predicate :object]
@@ -109,7 +110,7 @@
     (try
          (slurp fPath)
          (throw (new java.lang.RuntimeException (str "Over-write Protection: Existing File at " fPath)))
-      (catch clojure.java.io/FileNotFoundException e
+      (catch FileNotFoundException e
          ; safe to proceed - although could add actual write test by writing header w/ date
          (true)))))
 
