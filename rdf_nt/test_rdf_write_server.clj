@@ -62,7 +62,8 @@
 (deftest RDF-Output-to-File
     (testing "RDF-Output to File."
        (testing "writer-clear?"
-         (is (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp") "no file, should return true.")
+         (is (= true true) "test of testing.")
+         (is (= true (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp")) "no file, should return true.")
          (is (thrown? java.io.FileNotFoundException (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp"))
             "second time should throw exception because file exists with new header info.")
          ; clean up temp file

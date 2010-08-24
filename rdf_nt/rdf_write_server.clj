@@ -104,7 +104,6 @@
 ;
 (defn nt-rdf-writer-clear? "checks to make sure no existing file exists, else throws exception."
     [fPath]
-    (
     ; try reading fPath, which should produce error, in which case we catch and proceed
     ; If we don't get error, we throw RuntimeException: Over-write Protection
     (try
@@ -112,7 +111,7 @@
          (throw (new java.lang.RuntimeException (str "Over-write Protection: Existing File at " fPath)))
       (catch java.io.FileNotFoundException e
          ; safe to proceed - although could add actual write test by writing header w/ date
-         (true)))))
+         true)))
 
 ;
 ; 2.2 - nt-rdf-writer: takes all of the rdf statements and appends N-triples to file.
