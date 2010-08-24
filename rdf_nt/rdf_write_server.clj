@@ -13,7 +13,7 @@
 (ns ^{:author "Bob Savage" :version "v0.2"}
    rdf-nt.rdf-write-server
    ; imports & dependencies
-   (:use [clojure.java.io :only (reader writer)])
+   ;; not needed (:use [clojure.java.io :only (reader writer)])
 )
 ;
 ; 0.1 - rdf-statement creates [:subject :predicate :object]
@@ -102,8 +102,16 @@
 ; 2.1 - nt-rdf-writer-clear?
 ;
 (defn nt-rdf-writer-clear? "checks to make sure no existing file exists, else throws exception."
-    []
-)
+    [fPath]
+    (
+    ; try reading fPath, which should produce error, in which case we catch and proceed
+    ; If we don't get error, we throw RuntimeException: Over-write Protection
+    (try
+         (slurp fPath)
+         (throw (new java.lang.RuntimeException (str "Over-write Protection: Existing File at " fPath)))
+      (catch clojure.java.io/FileNotFoundException e
+         ; safe to proceed - although could add actual write test by writing header w/ date
+         (true)))))
 
 ;
 ; 2.2 - nt-rdf-writer: takes all of the rdf statements and appends N-triples to file.
@@ -113,11 +121,8 @@
 ;
 ;(defn nt-rdf-writer
 ;  "nt-rdf-writer: takes all of the variables and appends N-triples to file."
-;  [outPath statements]
-;  ;fake body - TODO
-;  ; DEBUGG
-;  (println (str "outPath: " outPath "."))
-;  ;; attempt to write string by interpolating blank and 
+;  [fPath statements]
+;  (spit fPath (interpolate "\n" (apply statementSTRING statements)))
 ;)
 ;
 ; 3 - TODO -

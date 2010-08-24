@@ -55,4 +55,17 @@
 
 ;;
 ;; 3 RDF-Output
+;;
+;; Note: writes to /tmp assumes no file named "rdf-writer.tmp" is there
+;;
+(deftest RDF-Output-to-File
+    (testing "RDF-Output to File."
+       (testing "writer-clear?"
+         (is (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp") "no file, should return true.")
+         (is (thrown? FileNotFoundException (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp"))
+            "second time should throw exception because file exists with new header info.")
+         ; clean up temp file
+         )
+       ;
+       (testing "use of rdf-nt-writer")))
 
