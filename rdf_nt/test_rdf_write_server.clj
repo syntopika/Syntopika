@@ -15,7 +15,8 @@
                                   statementSTRING
                                   initialize-statement-creator
                                   create-statements
-                                  nt-rdf-writer-clear?)]))
+                                  nt-rdf-writer-clear?
+                                  nt-rdf-writer)]))
 ;; 
 ;; 1 RDF-Statement
 (deftest RDF-Statement-ADT
@@ -62,6 +63,7 @@
 ;;
 (deftest RDF-Output-to-File
     (testing "RDF-Output to File."
+       ;;
        (testing "writer-clear?"
          (is (= true (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp")) "no file, should return true.")
          ; create file first
@@ -70,7 +72,30 @@
                      (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp"))
             "should throw exception because file exists.")
          ; clean up temp file
-         (.delete (file "/tmp/rdf-writer.tmp"))
-       ;
-       (testing "use of rdf-nt-writer"))))
+         (.delete (file "/tmp/rdf-writer.tmp")))
+       ;;
+       (testing "use of nt-rdf-writer"
+           ; 1. invoke with a list of statements.
+           ; 2. confirm that statements are retrievable.
+           ; 3. get rid of the file.
+           (let [fPath "/tmp/rdf-writer.tmp"
+                 sc (initialize-statement-creator)
+                 sList (create-statements sc
+                           {:customerEMAIL "customerEMAIL"
+                            :customerNAME "customerNAME"
+                            :serviceCOST "serviceCOST"
+                            :serviceDATE "serviceDATE"
+                            :barberID "barberID"})]
+                ; 1. feed sList to nt-rdf-writer
+                (nt-rdf-writer fPath sList) ; 1. feed sList to nt-rdf-writer
+                ; 2. confirm that satements are retrievable.
+                (let [s (slurp fPath)
+                      modelFString ""]
+                     ; compare s to modelFString
+                     (.equals s modelFString))
+                ; 3. get rid of the file.
+                (let [f (file fPath)]
+                     (.delete f))))
+       ;; end testing "use of rdf-nt-writer"
+       ))
 

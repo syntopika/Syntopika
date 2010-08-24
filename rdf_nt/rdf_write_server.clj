@@ -115,14 +115,16 @@
 ;
 ; 2.2 - nt-rdf-writer: takes all of the rdf statements and appends N-triples to file.
 ;     Pre-condition: statements is assumed to be a sequence of type RDF statement
-;     as has been previously defined. This section just combines them into a
-;     string representation (by invoking statementSTRING) that is appended (with line end) to file.
+;     as has been previously defined. Combine statements into a string representation,
+;     and append (with line ending) to file.
 ;
 (defn nt-rdf-writer
-  "nt-rdf-writer: takes all of the variables and appends N-triples to file."
+  "nt-rdf-writer: takes seq of statements and express as N-triples to file."
   [fPath statements]
-  (spit [fPath (interpose "\n" (apply statementSTRING statements))] :append true )
-)
+  (let [i (.iterator statements)]
+      ; express statements to file
+      (while (.hasNext i)
+           (spit fPath (str (statementSTRING (.next i)) "\n") :append true))))
 ;
 ; 3 - TODO -
 ;  3.A facilitates input of information (by listening on port),
