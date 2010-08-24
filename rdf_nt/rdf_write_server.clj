@@ -13,7 +13,7 @@
 (ns ^{:author "Bob Savage" :version "v0.2"}
    rdf-nt.rdf-write-server
    ; imports & dependencies
-   ;; not needed (:use [clojure.java.io :only (reader writer)]) ; using slurp and spit instead
+   (:use [clojure.java.io :only (file)])
    (:import (java.io.FileNotFoundException))
 )
 ;
@@ -104,14 +104,13 @@
 ;
 (defn nt-rdf-writer-clear? "checks to make sure no existing file exists, else throws exception."
     [fPath]
-    ; try reading fPath, which should produce error, in which case we catch and proceed
-    ; If we don't get error, we throw RuntimeException: Over-write Protection
-    (try
-         (slurp fPath)
-         (throw (new java.lang.RuntimeException (str "Over-write Protection: Existing File at " fPath)))
-      (catch java.io.FileNotFoundException e
-         ; safe to proceed - although could add actual write test by writing header w/ date
-         true)))
+    ; Uses file in java.io to detect existing file.
+    ; If there, we throw RuntimeException "Over-write Protection"
+      (let [tFILE (file fPath)]
+       (if (.exists tFILE)
+           (throw (new java.lang.RuntimeException
+                      (str "Over-write Protection: Existing File at " fPath)))
+        true)))
 
 ;
 ; 2.2 - nt-rdf-writer: takes all of the rdf statements and appends N-triples to file.
@@ -119,11 +118,11 @@
 ;     as has been previously defined. This section just combines them into a
 ;     string representation (by invoking statementSTRING) that is appended (with line end) to file.
 ;
-;(defn nt-rdf-writer
-;  "nt-rdf-writer: takes all of the variables and appends N-triples to file."
-;  [fPath statements]
-;  (spit fPath (interpolate "\n" (apply statementSTRING statements)))
-;)
+(defn nt-rdf-writer
+  "nt-rdf-writer: takes all of the variables and appends N-triples to file."
+  [fPath statements]
+  (spit [fPath (interpose "\n" (apply statementSTRING statements))] :append true )
+)
 ;
 ; 3 - TODO -
 ;  3.A facilitates input of information (by listening on port),

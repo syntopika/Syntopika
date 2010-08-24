@@ -9,6 +9,7 @@
 
 (ns rdf-nt.test-rdf-write-server
   (:use [clojure.test :only (deftest testing is)])
+  (:use [clojure.java.io :only (file)])
   (:use [rdf-nt.rdf-write-server :only
                                  (rdf-statement
                                   statementSTRING
@@ -62,12 +63,14 @@
 (deftest RDF-Output-to-File
     (testing "RDF-Output to File."
        (testing "writer-clear?"
-         (is (= true true) "test of testing.")
          (is (= true (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp")) "no file, should return true.")
-         (is (thrown? java.io.FileNotFoundException (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp"))
-            "second time should throw exception because file exists with new header info.")
+         ; create file first
+         (spit "/tmp/rdf-writer.tmp" "content\n")
+         (is (thrown? java.lang.RuntimeException
+                     (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp"))
+            "should throw exception because file exists.")
          ; clean up temp file
-         )
+         (.delete (file "/tmp/rdf-writer.tmp"))
        ;
-       (testing "use of rdf-nt-writer")))
+       (testing "use of rdf-nt-writer"))))
 
