@@ -13,7 +13,8 @@
                                  (rdf-statement
                                   statementSTRING
                                   initialize-statement-creator
-                                  create-statements)]))
+                                  create-statements
+                                  nt-rdf-writer-clear?)]))
 ;; 
 ;; 1 RDF-Statement
 (deftest RDF-Statement-ADT
@@ -62,7 +63,7 @@
     (testing "RDF-Output to File."
        (testing "writer-clear?"
          (is (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp") "no file, should return true.")
-         (is (thrown? FileNotFoundException (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp"))
+         (is (thrown? java.io.FileNotFoundException (nt-rdf-writer-clear? "/tmp/rdf-writer.tmp"))
             "second time should throw exception because file exists with new header info.")
          ; clean up temp file
          )

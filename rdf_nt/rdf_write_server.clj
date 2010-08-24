@@ -110,7 +110,7 @@
     (try
          (slurp fPath)
          (throw (new java.lang.RuntimeException (str "Over-write Protection: Existing File at " fPath)))
-      (catch FileNotFoundException e
+      (catch java.io.FileNotFoundException e
          ; safe to proceed - although could add actual write test by writing header w/ date
          (true)))))
 
