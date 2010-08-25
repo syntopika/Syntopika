@@ -86,16 +86,17 @@
                             :serviceCOST "serviceCOST"
                             :serviceDATE "serviceDATE"
                             :barberID "barberID"})]
-                ; 1. feed sList to nt-rdf-writer
-                (nt-rdf-writer fPath sList) ; 1. feed sList to nt-rdf-writer
-                ; 2. confirm that satements are retrievable.
-                (let [s (slurp fPath)
-                      modelFString ""]
-                     ; compare s to modelFString
-                     (.equals s modelFString))
+                
+              (testing "1 Feed sList to nt-rdf-writer."
+                (nt-rdf-writer fPath sList))
+                ;
+                (testing "2 Confirm that satements are retrievable."
+                 (let [s (slurp fPath)
+                       modelFString "<mailto://customerEMAIL> <http://www.example.com/barbershop/Predicate#name> customerNAME .\n<mailto://customerEMAIL> <http://www.example.com/barbershop/Predicate#received> _:service0 .\n_:service0 <http://www.example.com/barbershop/Predicate#cost> serviceCOST .\n_:service0 <http://www.example.com/barbershop/Predicate#date> serviceDATE .\n_:service0 <http://www.example.com/barbershop/Predicate#providedBy> barberID .\n"]
+                     (is (= false (.matches s "")) "string should not = the empty string")
+                     (is (= true (.matches s modelFString)) "slurped string should match modelFString"))
                 ; 3. get rid of the file.
                 (let [f (file fPath)]
-                     (.delete f))))
-       ;; end testing "use of rdf-nt-writer"
-       ))
+                     (.delete f))
+                )))))
 
